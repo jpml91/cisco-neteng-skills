@@ -5,7 +5,8 @@ A collection of Claude Code skills for network engineers working with Cisco and 
 ## Scope
 
 - **Switching** : Cisco IOS / IOS-XE ↔ Aruba CX
-- **WiFi** : Cisco WLC ↔ Aruba Mobility Master / Instant
+- **WiFi** : Cisco WLC (AireOS) ↔ Aruba Mobility Master / Instant
+- **WiFi** : Cisco Catalyst 9800 (IOS-XE wireless) ↔ Aruba Mobility Master / Instant
 - **Troubleshooting** : Cisco & Aruba switching and WiFi
 - **Implementation** : Configuration guidance and best practices
 
@@ -38,9 +39,15 @@ Every conversion outputs a structured report:
 - Cisco IOS/IOS-XE → Aruba CX
 - Aruba CX → Cisco IOS/IOS-XE
 
-### WiFi
+### WiFi — AireOS (legacy WLC)
 - Cisco WLC (AireOS) → Aruba Mobility Master / Instant
 - Aruba Mobility Master / Instant → Cisco WLC (AireOS)
+
+### WiFi — Catalyst 9800 (IOS-XE wireless)
+- Cisco Catalyst 9800 → Aruba Mobility Master / Instant
+- Aruba Mobility Master / Instant → Cisco Catalyst 9800
+
+> The `/config-converter` skill automatically distinguishes between AireOS and IOS-XE wireless based on configuration signatures. When the target is Cisco WiFi, it asks the user to specify the platform.
 
 ## Installation
 
@@ -49,6 +56,15 @@ Copy the desired skill folders into your Claude Code skills directory:
 ```
 ~/.claude/skills/
 ├── config-converter/
+│   ├── SKILL.md
+│   ├── switching/
+│   │   ├── cisco-to-aruba-cx/
+│   │   └── aruba-cx-to-cisco/
+│   └── wifi/
+│       ├── cisco-wlc-to-aruba/
+│       ├── aruba-to-cisco-wlc/
+│       ├── cisco-9800-to-aruba/
+│       └── aruba-to-cisco-9800/
 ├── troubleshooting/
 └── implementation/
 ```
