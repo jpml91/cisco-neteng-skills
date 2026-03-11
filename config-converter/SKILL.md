@@ -11,6 +11,9 @@ triggers:
   - convert switch config
   - convert wifi config
   - convert wlc
+  - convert 9800
+  - catalyst 9800
+  - ios-xe wireless
   - configuration conversion
 ---
 
@@ -34,31 +37,48 @@ Analyze the pasted configuration to identify:
 - `spanning-tree mode mstp`, `spanning-tree mode rpvst`
 - `vsx`, `ip helper-address`
 
+**Cisco Catalyst 9800 / IOS-XE (WiFi) signatures:**
+- `wireless profile policy`, `wireless tag policy`, `wireless tag site`, `wireless tag rf`
+- `wlan <name> <id> <ssid>` (three-argument wlan command)
+- `ap profile`, `wireless profile flex`
+- `ap dot11 5ghz rf-profile`, `ap dot11 24ghz rf-profile`
+
 **Cisco WLC / AireOS (WiFi) signatures:**
-- `wlan`, `ap-group`, `802.11`, `flexconnect`
-- `config wlan`, `config ap`, `rf-profile`
-- `security wpa`, `aaa-override`
+- `config wlan`, `config ap`, `config rf-profile`
+- `ap-group`, `flexconnect`, `aaa-override`
+- `security wpa` (without `wireless profile` context)
 
 **Aruba WiFi signatures:**
 - `ssid-profile`, `ap-group`, `virtual-ap`, `arm`
 - `aaa-profile`, `wlan ssid-profile`, `dot11`
 - `mobility-master`, `instant`
 
-## Step 2 — Ask for target vendor if ambiguous
+## Step 2 — Distinguish Cisco WiFi platforms
+
+If Cisco WiFi is detected, distinguish between:
+- **AireOS** (legacy WLC): config uses `config wlan`, `config ap`, `config rf-profile` CLI style
+- **IOS-XE / Catalyst 9800**: config uses `wireless profile policy`, `wireless tag`, `wlan <name> <id> <ssid>` style
+
+When the target is Cisco WiFi and the source is Aruba, ask the user:
+> "Is the target a **Catalyst 9800 (IOS-XE)** or a legacy **WLC (AireOS)**?"
+
+## Step 3 — Ask for target vendor if ambiguous
 
 If the source is clearly identified, immediately proceed. If ambiguous, ask the user:
 > "I detected a [source] configuration. Do you want to convert it to [target A] or [target B]?"
 
-## Step 3 — Route to the appropriate conversion
+## Step 4 — Route to the appropriate conversion
 
 Based on detection, apply the following conversion ruleset:
 
 - Cisco IOS/IOS-XE switching → **apply cisco-to-aruba-cx ruleset**
 - Aruba CX switching → **apply aruba-cx-to-cisco ruleset**
+- Cisco Catalyst 9800 (IOS-XE wireless) → **apply cisco-9800-to-aruba ruleset**
 - Cisco WLC/AireOS WiFi → **apply cisco-wlc-to-aruba ruleset**
-- Aruba WiFi → **apply aruba-to-cisco-wlc ruleset**
+- Aruba WiFi → target is 9800 → **apply aruba-to-cisco-9800 ruleset**
+- Aruba WiFi → target is AireOS → **apply aruba-to-cisco-wlc ruleset**
 
-## Step 4 — Output format
+## Step 5 — Output format
 
 Always structure your output as follows:
 
