@@ -10,7 +10,6 @@ A collection of Claude Code skills for network engineers working with Cisco and 
 - **Troubleshooting** : Cisco & Aruba switching and WiFi
 - **Implementation** : Configuration guidance and best practices
 
-> Firewalling is out of scope intentionally.
 
 ## Skills available
 
